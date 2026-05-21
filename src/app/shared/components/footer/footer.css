@@ -1,0 +1,24 @@
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+.animate-fade-up {
+  opacity: 0; /* starts hidden */
+  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Ensure z-index is lower than the rest of the layout */
+:host {
+  display: block;
+  z-index: -10;
+  position: relative;
+}

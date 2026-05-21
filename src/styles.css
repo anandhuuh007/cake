@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 348 20% 5%; /* Deep dark chocolate black #0F0A0B */
+    --foreground: 340 30% 94%; /* Warm off-white #F5EBEF */
+    
+    --color-1: 330 100% 40%; /* Dark Neon Pink */
+    --color-2: 140 100% 55%; /* Bright Electric Green */
+    --color-3: 210 100% 30%; /* Deep Neon Blue */
+    --color-4: 60 100% 70%; /* Light Neon Yellow */
+    --color-5: 295 100% 45%; /* Dark Neon Purple */
+    --brand: 50 100% 50%; /* Bright, punchy yellow */
+
+    --card: 347 17% 8%; /* #191113 */
+    --card-foreground: 340 30% 94%;
+ 
+    --popover: 348 20% 5%;
+    --popover-foreground: 340 30% 94%;
+ 
+    --primary: 347 62% 58%; /* Warm pink #D4526E */
+    --primary-foreground: 18 100% 98%;
+ 
+    --secondary: 347 20% 12%; /* #24181B */
+    --secondary-foreground: 340 30% 94%;
+ 
+    --muted: 347 20% 12%;
+    --muted-foreground: 343 8% 58%; /* #9B8C90 */
+ 
+    --accent: 347 62% 58%;
+    --accent-foreground: 18 100% 98%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+ 
+    --border: 347 20% 12%;
+    --input: 347 20% 12%;
+    --ring: 347 62% 58%;
+ 
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 348 20% 5%;
+    --foreground: 340 30% 94%;
+ 
+    --color-1: 330 100% 40%; /* Dark Neon Pink */
+    --color-2: 140 100% 55%; /* Bright Electric Green */
+    --color-3: 210 100% 30%; /* Deep Neon Blue */
+    --color-4: 60 100% 70%; /* Light Neon Yellow */
+    --color-5: 295 100% 45%; /* Dark Neon Purple */
+    --brand: 50 100% 50%; /* Bright, punchy yellow */
+
+    --card: 347 17% 8%;
+    --card-foreground: 340 30% 94%;
+ 
+    --popover: 348 20% 5%;
+    --popover-foreground: 340 30% 94%;
+ 
+    --primary: 347 62% 58%;
+    --primary-foreground: 18 100% 98%;
+ 
+    --secondary: 347 20% 12%;
+    --secondary-foreground: 340 30% 94%;
+ 
+    --muted: 347 20% 12%;
+    --muted-foreground: 343 8% 58%;
+ 
+    --accent: 347 62% 58%;
+    --accent-foreground: 18 100% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 340 30% 94%;
+ 
+    --border: 347 20% 12%;
+    --input: 347 20% 12%;
+    --ring: 347 62% 58%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
