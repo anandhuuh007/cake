@@ -1,0 +1,1 @@
+import{Aa as a,Pa as n,Qa as o,db as s}from"./chunk-CNUIQPKR.js";import"./chunk-7CGTOI24.js";var i=class e{static \u0275fac=function(t){return new(t||e)};static \u0275cmp=a({type:e,selectors:[["app-auth"]],decls:2,vars:0,template:function(t,m){t&1&&(n(0,"p"),s(1,"auth works!"),o())},encapsulation:2})};export{i as Auth};
