@@ -1,1 +1,655 @@
-<p>admin works!</p>
+<!-- Background Deco (Full Screen) -->
+<div class="fixed inset-0 -z-10 bg-zinc-50 overflow-hidden">
+  <div class="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-rose-200/40 blur-3xl animate-pulse" style="animation-duration: 6s;"></div>
+  <div class="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-amber-200/40 blur-3xl animate-pulse" style="animation-duration: 8s;"></div>
+</div>
+
+<!-- ================= AUTH VIEW ================= -->
+<div *ngIf="!isLoggedIn" class="min-h-screen flex items-center justify-center px-6 py-12">
+  <div class="w-full max-w-md p-8 rounded-3xl glass-panel glow-pink shadow-2xl relative overflow-hidden border border-white/40">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center p-3 rounded-2xl bg-rose-500/10 text-rose-600 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+      </div>
+      <h2 (click)="triggerBypass()" class="text-2xl font-black text-zinc-800 tracking-tight cursor-pointer select-none">Sweet Layers</h2>
+      <p class="text-sm text-zinc-500 mt-1">Admin Portal Access</p>
+    </div>
+
+    <!-- Error Banner -->
+    <div *ngIf="authError" class="mb-5 p-3.5 bg-rose-50 border border-rose-100 text-rose-600 text-xs font-medium rounded-xl flex items-start gap-2.5">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ authError }}</span>
+    </div>
+
+    <!-- Login Form -->
+    <form (submit)="login()" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5 ml-1">Email Address</label>
+        <input 
+          type="email" 
+          name="email" 
+          [(ngModel)]="userEmail"
+          placeholder="admin@sweetlayers.com"
+          class="w-full px-4 py-3 bg-white/70 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-zinc-800"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5 ml-1">Password</label>
+        <input 
+          type="password" 
+          name="password" 
+          [(ngModel)]="password"
+          placeholder="••••••••"
+          class="w-full px-4 py-3 bg-white/70 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-zinc-800"
+          required
+        />
+      </div>
+
+      <button 
+        type="submit" 
+        class="w-full mt-6 py-3 bg-gradient-to-r from-rose-500 to-amber-500 text-white font-bold rounded-xl text-sm hover:opacity-95 active:scale-[0.99] transition-all shadow-md shadow-rose-500/20 cursor-pointer"
+      >
+        Sign In to Portal
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MAIN DASHBOARD ================= -->
+<div *ngIf="isLoggedIn" class="min-h-screen flex flex-col pt-20">
+  
+  <!-- Header Bar -->
+  <header class="bg-white/80 backdrop-blur-md border-b border-zinc-200/60 sticky top-0 z-30 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="p-2 rounded-xl bg-rose-500/10 text-rose-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        </span>
+        <div>
+          <h1 class="text-lg font-black text-zinc-800 tracking-tight">Sweet Layers</h1>
+          <p class="text-xs text-zinc-500 font-medium">Control Center • {{ userEmail }}</p>
+        </div>
+      </div>
+
+      <button 
+        (click)="logout()"
+        class="px-4 py-2 border border-zinc-200 text-zinc-600 rounded-xl text-xs font-bold hover:bg-zinc-50 hover:text-rose-500 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        Sign Out
+      </button>
+    </div>
+  </header>
+
+  <!-- Dashboard Container -->
+  <div class="max-w-7xl mx-auto w-full px-6 py-8 flex-grow flex flex-col md:flex-row gap-8">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="md:w-64 shrink-0 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-x-visible pb-4 md:pb-0">
+      <button 
+        (click)="activeTab = 'overview'" 
+        [class]="activeTab === 'overview' ? 'bg-gradient-to-r from-rose-500/10 to-rose-500/5 text-rose-600 font-bold border-l-2 border-rose-500' : 'text-zinc-600 hover:bg-zinc-100 border-l-2 border-transparent'"
+        class="flex-1 md:flex-none flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm transition-all whitespace-nowrap cursor-pointer text-left"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
+        </svg>
+        Overview
+      </button>
+
+      <button 
+        (click)="activeTab = 'products'" 
+        [class]="activeTab === 'products' ? 'bg-gradient-to-r from-rose-500/10 to-rose-500/5 text-rose-600 font-bold border-l-2 border-rose-500' : 'text-zinc-600 hover:bg-zinc-100 border-l-2 border-transparent'"
+        class="flex-1 md:flex-none flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm transition-all whitespace-nowrap cursor-pointer text-left"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+        </svg>
+        Manage Cakes
+      </button>
+
+      <button 
+        (click)="activeTab = 'orders'" 
+        [class]="activeTab === 'orders' ? 'bg-gradient-to-r from-rose-500/10 to-rose-500/5 text-rose-600 font-bold border-l-2 border-rose-500' : 'text-zinc-600 hover:bg-zinc-100 border-l-2 border-transparent'"
+        class="flex-1 md:flex-none flex items-center gap-3 px-4 py-3 rounded-r-xl text-sm transition-all whitespace-nowrap cursor-pointer text-left"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        Manage Orders
+        <span *ngIf="pendingOrdersCount > 0" class="ml-auto bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+          {{ pendingOrdersCount }}
+        </span>
+      </button>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow min-w-0 bg-white/70 backdrop-blur-md rounded-3xl border border-zinc-200/50 p-6 md:p-8 shadow-sm">
+      
+      <!-- ================= TAB 1: OVERVIEW ================= -->
+      <section *ngIf="activeTab === 'overview'" class="space-y-8 animate-fadeIn">
+        <div>
+          <h2 class="text-2xl font-black text-zinc-800 tracking-tight">Overview Dashboard</h2>
+          <p class="text-sm text-zinc-500 mt-1">Real-time shop operations & sales summaries.</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-gradient-to-br from-rose-500 to-rose-600 p-5 rounded-2xl text-white shadow-md shadow-rose-500/10 relative overflow-hidden">
+            <div class="absolute right-3 top-3 opacity-15">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-100">Total Revenue</span>
+            <div class="text-2xl md:text-3xl font-black mt-2">${{ totalRevenue | number:'1.2-2' }}</div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-zinc-200/60 shadow-sm relative overflow-hidden">
+            <div class="absolute right-3 top-3 text-zinc-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </div>
+            <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Total Orders</span>
+            <div class="text-2xl md:text-3xl font-black mt-2 text-zinc-800">{{ totalOrders }}</div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-zinc-200/60 shadow-sm relative overflow-hidden">
+            <div class="absolute right-3 top-3 text-zinc-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2" />
+              </svg>
+            </div>
+            <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">Total Cakes</span>
+            <div class="text-2xl md:text-3xl font-black mt-2 text-zinc-800">{{ activeProductsCount }}</div>
+          </div>
+
+          <div class="bg-amber-500 p-5 rounded-2xl text-white shadow-md shadow-amber-500/10 relative overflow-hidden">
+            <div class="absolute right-3 top-3 opacity-15">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-100">Pending Orders</span>
+            <div class="text-2xl md:text-3xl font-black mt-2">{{ pendingOrdersCount }}</div>
+          </div>
+        </div>
+
+        <!-- Seeding panel if empty -->
+        <div *ngIf="products.length === 0" class="p-6 bg-rose-50/50 border border-rose-100 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="text-center md:text-left">
+            <h4 class="font-bold text-zinc-800 text-sm">Need test products?</h4>
+            <p class="text-xs text-zinc-500 mt-1">Your database currently has no products. You can seed 5 premium default cakes quickly.</p>
+          </div>
+          <button 
+            (click)="seedSampleProducts()"
+            class="px-5 py-2.5 bg-rose-500 text-white font-bold rounded-xl text-xs hover:bg-rose-600 active:scale-95 transition-all shadow-md shadow-rose-500/10 cursor-pointer whitespace-nowrap"
+          >
+            Seed Default Cakes
+          </button>
+        </div>
+
+        <!-- Recent Activity / Orders -->
+        <div class="space-y-4">
+          <h3 class="font-bold text-zinc-700 text-sm uppercase tracking-wider ml-1">Recent Activity & Orders</h3>
+          
+          <div class="border border-zinc-200/60 rounded-2xl overflow-hidden bg-white shadow-sm">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-zinc-50/80 border-b border-zinc-200/60 text-zinc-500 font-bold uppercase tracking-wider">
+                    <th class="p-4">Customer</th>
+                    <th class="p-4">Order Items</th>
+                    <th class="p-4">Amount</th>
+                    <th class="p-4 text-center">Payment</th>
+                    <th class="p-4 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-100 text-zinc-700">
+                  <tr *ngFor="let order of orders.slice(0, 5)" class="hover:bg-zinc-50/40 transition-all">
+                    <td class="p-4 font-semibold">
+                      <div>{{ order.customerName }}</div>
+                      <div class="text-[10px] text-zinc-400 font-normal mt-0.5">{{ order.customerPhone }}</div>
+                    </td>
+                    <td class="p-4 max-w-xs truncate">
+                      <span *ngFor="let item of order.items; let last = last">
+                        {{ item.name }} (x{{ item.quantity }}){{ last ? '' : ', ' }}
+                      </span>
+                    </td>
+                    <td class="p-4 font-bold text-zinc-950">${{ order.totalAmount }}</td>
+                    <td class="p-4 text-center">
+                      <span 
+                        [class]="order.paymentStatus.toLowerCase() === 'paid' || order.paymentStatus.toLowerCase() === 'completed' ? 'bg-green-50 text-green-600 border-green-200' : 'bg-amber-50 text-amber-600 border-amber-200'"
+                        class="px-2.5 py-1 text-[10px] font-bold rounded-full border"
+                      >
+                        {{ order.paymentStatus || 'Pending' }}
+                      </span>
+                    </td>
+                    <td class="p-4 text-center">
+                      <span 
+                        [class]="order.orderStatus.toLowerCase() === 'delivered' ? 'bg-zinc-100 text-zinc-600 border-zinc-200' : (order.orderStatus.toLowerCase() === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-rose-50 text-rose-600 border-rose-200')"
+                        class="px-2.5 py-1 text-[10px] font-bold rounded-full border inline-block"
+                      >
+                        {{ order.orderStatus || 'Pending' }}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr *ngIf="orders.length === 0">
+                    <td colspan="5" class="p-8 text-center text-zinc-400 font-medium">
+                      No orders have been placed yet.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 2: PRODUCTS ================= -->
+      <section *ngIf="activeTab === 'products'" class="space-y-6 animate-fadeIn">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-black text-zinc-800 tracking-tight">Cake Catalog</h2>
+            <p class="text-sm text-zinc-500 mt-1">Manage cakes, pricing, options & availability.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button 
+              (click)="seedSampleProducts()"
+              class="px-4 py-2.5 border border-zinc-200 text-zinc-600 font-bold rounded-xl text-xs hover:bg-zinc-50 transition-all cursor-pointer"
+            >
+              Seed Samples
+            </button>
+            <button 
+              (click)="openAddProductModal()"
+              class="px-4 py-2.5 bg-rose-500 text-white font-bold rounded-xl text-xs hover:bg-rose-600 active:scale-95 transition-all shadow-md shadow-rose-500/10 cursor-pointer flex items-center gap-1.5"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              Add New Cake
+            </button>
+          </div>
+        </div>
+
+        <!-- Products Grid / Inventory -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div *ngFor="let product of products" class="bg-white border border-zinc-200/60 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
+            <div class="h-44 relative bg-zinc-100 overflow-hidden">
+              <img [src]="product.image" alt="Cake image" class="w-full h-full object-cover" />
+              <!-- Badges -->
+              <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                <span *ngIf="product.featured" class="px-2 py-0.5 text-[9px] font-bold bg-amber-500 text-white rounded-full uppercase tracking-wider">
+                  Featured
+                </span>
+                <span *ngIf="product.soldOut" class="px-2 py-0.5 text-[9px] font-bold bg-red-600 text-white rounded-full uppercase tracking-wider">
+                  Sold Out
+                </span>
+              </div>
+              <span class="absolute bottom-3 right-3 px-2 py-0.5 text-[9px] font-bold bg-zinc-950/60 text-white rounded-full backdrop-blur-sm">
+                {{ product.category }}
+              </span>
+            </div>
+            
+            <div class="p-4 flex-grow flex flex-col justify-between">
+              <div>
+                <h3 class="font-bold text-zinc-900 text-sm line-clamp-1">{{ product.name }}</h3>
+                <p class="text-xs text-zinc-500 mt-1 line-clamp-2">{{ product.description }}</p>
+                
+                <div class="mt-3 flex items-center gap-2">
+                  <span class="text-sm font-black text-zinc-950">${{ product.price }}</span>
+                  <span *ngIf="product.discount > 0" class="text-xs text-rose-500 font-bold bg-rose-50 px-1.5 py-0.5 rounded">
+                    -${{ product.discount }} Off
+                  </span>
+                </div>
+
+                <div class="mt-3 flex flex-wrap gap-1">
+                  <span *ngFor="let wt of product.weights" class="text-[9px] bg-zinc-100 text-zinc-600 px-2 py-0.5 rounded-full font-medium">
+                    {{ wt }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-zinc-100">
+                <button 
+                  (click)="openEditProductModal(product)"
+                  class="py-2 border border-zinc-200 text-zinc-600 text-xs font-bold rounded-lg hover:bg-zinc-50 transition-all cursor-pointer flex items-center justify-center gap-1"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                  Edit
+                </button>
+                <button 
+                  (click)="deleteProduct(product.id || '')"
+                  class="py-2 border border-rose-100 text-rose-500 text-xs font-bold rounded-lg hover:bg-rose-50 transition-all cursor-pointer flex items-center justify-center gap-1"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="products.length === 0" class="col-span-full py-20 text-center text-zinc-400">
+            <p class="font-medium">No products found. Add your first cake catalog item!</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 3: ORDERS ================= -->
+      <section *ngIf="activeTab === 'orders'" class="space-y-6 animate-fadeIn">
+        <div>
+          <h2 class="text-2xl font-black text-zinc-800 tracking-tight">Order Register</h2>
+          <p class="text-sm text-zinc-500 mt-1">Review orders, modify statuses, and contact customers.</p>
+        </div>
+
+        <div class="border border-zinc-200/60 rounded-2xl overflow-hidden bg-white shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-zinc-50/80 border-b border-zinc-200/60 text-zinc-500 font-bold uppercase tracking-wider">
+                  <th class="p-4">Customer Details</th>
+                  <th class="p-4">Cakes Ordered</th>
+                  <th class="p-4">Delivery Address</th>
+                  <th class="p-4">Amount</th>
+                  <th class="p-4 text-center">Payment</th>
+                  <th class="p-4 text-center">Order Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-100 text-zinc-700">
+                <tr *ngFor="let order of orders" class="hover:bg-zinc-50/40 transition-all">
+                  <td class="p-4 font-semibold whitespace-nowrap">
+                    <div class="text-zinc-900">{{ order.customerName }}</div>
+                    <div class="text-[10px] text-zinc-400 font-normal mt-0.5">{{ order.customerPhone }}</div>
+                  </td>
+                  <td class="p-4 max-w-xs">
+                    <div *ngFor="let item of order.items" class="mt-0.5">
+                      <span class="font-bold text-zinc-800">{{ item.name }}</span> 
+                      <span class="text-zinc-500 text-[10px] ml-1">x{{ item.quantity }} ({{ item.weight || 'Default' }})</span>
+                    </div>
+                  </td>
+                  <td class="p-4 max-w-xxs truncate" [title]="order.customerAddress">
+                    {{ order.customerAddress }}
+                  </td>
+                  <td class="p-4 font-bold text-zinc-950">${{ order.totalAmount }}</td>
+                  <td class="p-4 text-center">
+                    <span 
+                      [class]="order.paymentStatus.toLowerCase() === 'paid' || order.paymentStatus.toLowerCase() === 'completed' ? 'bg-green-50 text-green-600 border-green-200' : 'bg-amber-50 text-amber-600 border-amber-200'"
+                      class="px-2.5 py-1 text-[10px] font-bold rounded-full border inline-block"
+                    >
+                      {{ order.paymentStatus || 'Pending' }}
+                    </span>
+                  </td>
+                  <td class="p-4 text-center whitespace-nowrap">
+                    <select 
+                      (change)="updateOrderStatus(order.id || '', $event)"
+                      class="px-2.5 py-1 border border-zinc-200 rounded-lg text-xs bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-rose-500/20 text-zinc-700 font-semibold cursor-pointer"
+                    >
+                      <option value="Pending" [selected]="order.orderStatus === 'Pending'">Pending</option>
+                      <option value="Processing" [selected]="order.orderStatus === 'Processing'">Processing</option>
+                      <option value="Out for Delivery" [selected]="order.orderStatus === 'Out for Delivery'">Out for Delivery</option>
+                      <option value="Delivered" [selected]="order.orderStatus === 'Delivered'">Delivered</option>
+                      <option value="Cancelled" [selected]="order.orderStatus === 'Cancelled'">Cancelled</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr *ngIf="orders.length === 0">
+                  <td colspan="6" class="p-8 text-center text-zinc-400 font-medium">
+                    No orders found.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+</div>
+
+<!-- ================= ADD/EDIT PRODUCT MODAL ================= -->
+<div *ngIf="showProductModal" class="fixed inset-0 z-40 flex items-center justify-center p-6 bg-zinc-950/40 backdrop-blur-sm overflow-y-auto">
+  <div class="w-full max-w-2xl bg-white rounded-3xl border border-zinc-100 shadow-2xl p-6 md:p-8 relative overflow-hidden animate-fadeIn my-8">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between pb-4 border-b border-zinc-100 mb-6">
+      <h3 class="text-lg font-black text-zinc-800 tracking-tight">
+        {{ isEditingProduct ? 'Update Cake Configuration' : 'Introduce New Cake' }}
+      </h3>
+      <button 
+        (click)="closeProductModal()"
+        class="p-1.5 rounded-lg border border-zinc-200 text-zinc-400 hover:text-zinc-700 active:scale-95 transition-all cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Scrollable content -->
+    <form (submit)="saveProduct()" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
+      
+      <!-- Grid Inputs -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1 ml-0.5">Cake Name *</label>
+          <input 
+            type="text" 
+            name="name" 
+            [(ngModel)]="productForm.name"
+            placeholder="e.g. Triple Chocolate Fudge"
+            class="w-full px-3 py-2 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-zinc-800"
+            required
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1 ml-0.5">Category</label>
+          <select 
+            name="category" 
+            [(ngModel)]="productForm.category"
+            class="w-full px-3 py-2 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-zinc-700 cursor-pointer"
+          >
+            <option value="Chocolate Cakes">Chocolate Cakes</option>
+            <option value="Birthday Cakes">Birthday Cakes</option>
+            <option value="Wedding Cakes">Wedding Cakes</option>
+            <option value="Cheesecakes">Cheesecakes</option>
+            <option value="Cupcakes">Cupcakes</option>
+            <option value="Classic">Classic</option>
+            <option value="Signature">Signature</option>
+            <option value="Sugar-Free">Sugar-Free</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5 ml-0.5">Cake Image *</label>
+        
+        <!-- File selector / Preview container -->
+        <div class="relative w-full min-h-[160px] border-2 border-dashed border-zinc-200 hover:border-rose-500/50 rounded-2xl flex flex-col items-center justify-center p-4 bg-zinc-50/50 transition-all overflow-hidden group">
+          
+          <!-- Image preview if exists -->
+          <div *ngIf="productForm.image && !imageUploading" class="absolute inset-0 flex items-center justify-center bg-white z-10">
+            <img [src]="productForm.image" class="w-full h-full object-cover rounded-2xl" alt="Uploaded cake" />
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 rounded-2xl">
+              <button 
+                type="button" 
+                (click)="fileInput.click()" 
+                class="px-3.5 py-1.5 bg-white text-zinc-800 text-xs font-bold rounded-xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              >
+                Change Image
+              </button>
+              <button 
+                type="button" 
+                (click)="productForm.image = ''" 
+                class="px-3.5 py-1.5 bg-rose-500 text-white text-xs font-bold rounded-xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+
+          <!-- Spinner if uploading -->
+          <div *ngIf="imageUploading" class="absolute inset-0 bg-white/80 backdrop-blur-xs flex flex-col items-center justify-center gap-3 z-20">
+            <div class="w-8 h-8 rounded-full border-4 border-rose-100 border-t-rose-500 animate-spin"></div>
+            <span class="text-xs font-bold text-zinc-500 uppercase tracking-wider">Uploading to Storage...</span>
+          </div>
+
+          <!-- Upload prompt if empty -->
+          <div *ngIf="!productForm.image && !imageUploading" class="flex flex-col items-center gap-2 cursor-pointer py-4" (click)="fileInput.click()">
+            <span class="p-3.5 bg-rose-500/10 text-rose-500 rounded-2xl">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+            </span>
+            <div class="text-xs font-bold text-zinc-700 mt-1">Upload Product Image</div>
+            <div class="text-[10px] text-zinc-400 font-medium">Supports JPG, PNG (Max 5MB)</div>
+          </div>
+
+          <!-- Hidden File Input -->
+          <input 
+            type="file" 
+            #fileInput 
+            class="hidden" 
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            [required]="!productForm.image"
+          />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1 ml-0.5">Base Price ($) *</label>
+          <input 
+            type="number" 
+            name="price" 
+            [(ngModel)]="productForm.price"
+            placeholder="39"
+            class="w-full px-3 py-2 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-zinc-800"
+            required
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1 ml-0.5">Discount ($)</label>
+          <input 
+            type="number" 
+            name="discount" 
+            [(ngModel)]="productForm.discount"
+            placeholder="5"
+            class="w-full px-3 py-2 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-zinc-800"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1 ml-0.5">Description</label>
+        <textarea 
+          name="description" 
+          [(ngModel)]="productForm.description"
+          placeholder="Crafted to perfection with..."
+          rows="3"
+          class="w-full px-3 py-2 border border-zinc-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-zinc-800"
+        ></textarea>
+      </div>
+
+      <!-- Weights list config -->
+      <div>
+        <label class="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5 ml-0.5">Custom Weights (Sizing Options)</label>
+        
+        <div class="flex flex-wrap gap-1.5 mb-2.5">
+          <span 
+            *ngFor="let wt of productForm.weights; let i = index" 
+            class="inline-flex items-center gap-1 text-[11px] bg-zinc-100 text-zinc-700 px-2.5 py-1 rounded-full font-bold"
+          >
+            {{ wt }}
+            <button 
+              type="button"
+              (click)="removeWeight(i)"
+              class="text-zinc-400 hover:text-rose-500 ml-0.5 font-normal cursor-pointer"
+            >
+              ×
+            </button>
+          </span>
+        </div>
+
+        <div class="flex gap-2 max-w-xs">
+          <input 
+            type="text" 
+            name="weightInput"
+            [(ngModel)]="weightInput"
+            placeholder="e.g. 1.5 kg"
+            class="w-full px-3 py-1.5 border border-zinc-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-zinc-800"
+          />
+          <button 
+            type="button"
+            (click)="addWeight()"
+            class="px-3.5 py-1.5 border border-zinc-200 text-zinc-600 rounded-xl text-xs font-bold hover:bg-zinc-50 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+
+      <!-- Toggles -->
+      <div class="flex gap-6 py-2">
+        <label class="inline-flex items-center gap-2 text-xs font-bold text-zinc-700 select-none cursor-pointer">
+          <input 
+            type="checkbox" 
+            name="featured" 
+            [(ngModel)]="productForm.featured"
+            class="w-4 h-4 rounded text-rose-600 focus:ring-rose-500 border-zinc-300"
+          />
+          Featured Product
+        </label>
+
+        <label class="inline-flex items-center gap-2 text-xs font-bold text-zinc-700 select-none cursor-pointer">
+          <input 
+            type="checkbox" 
+            name="soldOut" 
+            [(ngModel)]="productForm.soldOut"
+            class="w-4 h-4 rounded text-rose-600 focus:ring-rose-500 border-zinc-300"
+          />
+          Mark Sold Out
+        </label>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="flex justify-end gap-3 pt-4 border-t border-zinc-100">
+        <button 
+          type="button"
+          (click)="closeProductModal()"
+          class="px-5 py-2.5 border border-zinc-200 text-zinc-600 rounded-xl text-xs font-bold hover:bg-zinc-50 active:scale-95 transition-all cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button 
+          type="submit"
+          class="px-5 py-2.5 bg-gradient-to-r from-rose-500 to-amber-500 text-white font-bold rounded-xl text-xs hover:opacity-95 active:scale-[0.99] transition-all shadow-md shadow-rose-500/10 cursor-pointer"
+        >
+          {{ isEditingProduct ? 'Update Product' : 'Add Product' }}
+        </button>
+      </div>
+      
+    </form>
+  </div>
+</div>

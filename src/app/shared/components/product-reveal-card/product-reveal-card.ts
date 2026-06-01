@@ -13,7 +13,7 @@ export class ProductRevealCard {
   @Input() id: string = "";
   @Input() name: string = "Premium Wireless Headphones";
   @Input() price: string = "$199";
-  @Input() originalPrice: string = "$299";
+  @Input() originalPrice?: string;
   @Input() image: string = "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=800&h=600&fit=crop";
   @Input() description: string = "Experience studio-quality sound with advanced noise cancellation and 30-hour battery life. Perfect for music lovers and professionals.";
   @Input() rating: number = 4.8;

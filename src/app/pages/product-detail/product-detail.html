@@ -1,4 +1,18 @@
-<div class="min-h-screen bg-zinc-50 pt-28 pb-20" *ngIf="product">
+<div class="min-h-screen bg-zinc-50 pt-28 pb-20 flex items-center justify-center" *ngIf="isLoading">
+  <p class="text-zinc-500 font-medium">Loading cake details...</p>
+</div>
+
+<div class="min-h-screen bg-zinc-50 pt-28 pb-20 flex items-center justify-center" *ngIf="!isLoading && notFound">
+  <div class="text-center px-6">
+    <h1 class="text-2xl font-bold text-zinc-900 mb-2">Product not found</h1>
+    <p class="text-zinc-500 mb-6">This cake may have been removed or the link is invalid.</p>
+    <a routerLink="/products" class="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-white font-semibold hover:opacity-90 transition-opacity">
+      Browse all cakes
+    </a>
+  </div>
+</div>
+
+<div class="min-h-screen bg-zinc-50 pt-28 pb-20" *ngIf="!isLoading && product">
   <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
     
     <!-- Back Navigation -->

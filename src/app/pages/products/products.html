@@ -49,19 +49,31 @@
       </div>
     </div>
 
+    <!-- Category Filters -->
+    <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
+      <button 
+        *ngFor="let category of categories"
+        (click)="setCategory(category)"
+        [class]="selectedCategory === category ? 'bg-primary text-primary-foreground shadow-md' : 'bg-white text-zinc-600 hover:bg-zinc-100 border border-zinc-200'"
+        class="px-5 py-2 rounded-full text-sm font-semibold transition-all cursor-pointer whitespace-nowrap"
+      >
+        {{ category }}
+      </button>
+    </div>
+
     <!-- Products Grid -->
     <div class="flex flex-wrap justify-center gap-8" *ngIf="filteredProducts.length > 0">
       <app-product-reveal-card
         *ngFor="let product of filteredProducts"
-        [id]="product.id"
-        [badgeText]="product.badgeText || ''"
+        [id]="product.id || product.name"
+        [badgeText]="product.soldOut ? 'Sold Out' : (product.featured ? 'Featured' : (product.category || 'Classic'))"
         [name]="product.name"
-        [price]="product.price"
-        [originalPrice]="product.originalPrice || ''"
+        [price]="'$' + product.price"
+        [originalPrice]="product.discount ? '$' + (product.price + product.discount) : undefined"
         [image]="product.image"
         [description]="product.description"
-        [rating]="product.rating"
-        [reviewCount]="product.reviewCount"
+        [rating]="4.9"
+        [reviewCount]="100 + (product.price * 2)"
       >
       </app-product-reveal-card>
     </div>

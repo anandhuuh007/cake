@@ -58,41 +58,31 @@
     <div class="relative flex items-center justify-center">
       <!-- Product Grid -->
       <div class="flex flex-wrap justify-center gap-8 w-full">
-        <app-product-reveal-card
-          id="signature-belgian-fudge"
-          badgeText="Top Classic"
-          name="Signature Belgian Fudge"
-          price="$39"
-          originalPrice="$55"
-          image="/cakes/Decadent%20Triple%20Chocolate%20Cake%20Recipe_%20Rich,%20Moist,%20and%20Irresistible!%20_%20Food%20&%20Recipes.jpg"
-          description="Layers of rich moist chocolate fudge cake filled and coated with smooth premium Belgian chocolate ganache."
-          [rating]="4.9"
-          [reviewCount]="182">
-        </app-product-reveal-card>
+        <!-- Loading State Skeleton -->
+        <ng-container *ngIf="isLoading">
+          <div *ngFor="let i of [1, 2, 3]" class="w-full max-w-sm rounded-2xl bg-zinc-100 animate-pulse h-96 border border-zinc-200"></div>
+        </ng-container>
 
-        <app-product-reveal-card
-          id="red-velvet-supreme"
-          badgeText="Top Classic"
-          name="Red Velvet Supreme"
-          price="$45"
-          originalPrice="$60"
-          image="/cakes/velvet%20cake.jpg"
-          description="Classic Southern red velvet layers filled and frosted with our signature light cream cheese frosting."
-          [rating]="4.8"
-          [reviewCount]="143">
-        </app-product-reveal-card>
-
-        <app-product-reveal-card
-          id="classic-strawberry-cream"
-          badgeText="Top Classic"
-          name="Classic Strawberry Cream"
-          price="$35"
-          originalPrice="$48"
-          image="/cakes/Strawberry%20cake%20PNG_%20Fresh,%20sweet%20&%20ready%20to%20download!.jpg"
-          description="Light vanilla sponge cake layered with fresh handpicked strawberries and clouds of whipped cream."
-          [rating]="4.7"
-          [reviewCount]="95">
-        </app-product-reveal-card>
+        <!-- Actual Products -->
+        <ng-container *ngIf="!isLoading">
+          <app-product-reveal-card
+            *ngFor="let product of featuredProducts"
+            [id]="product.id || product.name"
+            [badgeText]="product.featured ? 'Signature' : (product.category || 'Classic')"
+            [name]="product.name"
+            [price]="'$' + product.price"
+            [originalPrice]="product.discount ? '$' + (product.price + product.discount) : undefined"
+            [image]="product.image"
+            [description]="product.description"
+            [rating]="4.9"
+            [reviewCount]="100 + (product.price * 2)">
+          </app-product-reveal-card>
+          
+          <!-- Empty State (No Products in DB) -->
+          <div *ngIf="featuredProducts.length === 0" class="col-span-full py-12 text-center text-zinc-500">
+            <p>Our freshly baked catalog is currently being updated. Please check back soon!</p>
+          </div>
+        </ng-container>
       </div>
 
       <!-- Floating Arrow Link (Positioned absolutely on the right) -->
