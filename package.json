@@ -7,7 +7,8 @@
     "dev": "ng serve --host 0.0.0.0",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "gh-pages -d dist/sweet-layers/browser"
   },
   "private": true,
   "dependencies": {
@@ -34,6 +35,7 @@
     "@angular/cli": "^21.2.11",
     "@angular/compiler-cli": "^21.2.0",
     "autoprefixer": "^10.5.0",
+    "gh-pages": "^6.3.0",
     "jsdom": "^28.0.0",
     "postcss": "^8.5.15",
     "prettier": "^3.8.1",
